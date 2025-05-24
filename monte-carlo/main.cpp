@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     if (argc != 4)
     {
-        std::cerr << "Expected amount of arguments was 3 [a, b, samples]";
+        std::cerr << "Expected amount of arguments was 3 [a, b, samples], but actually it was " << argc << std::endl ;
         return 1;
     }
 
@@ -15,14 +15,9 @@ int main(int argc, char *argv[])
     double b = std::atof(argv[2]);
     long long samples = std::atoll(argv[3]);
 
-    auto start = std::chrono::high_resolution_clock::now();
     double result = monte_carlo(a, b, samples);
-    auto end = std::chrono::high_resolution_clock::now();
 
-    std::chrono::duration<double> elapsed = end - start;
-
-    std::cout << "Integral estimate: " << result << "\n";
-    std::cout << "Time taken: " << elapsed.count() << " seconds\n";
+    std::cout << result << std::endl;
 
     return 0;
 }
