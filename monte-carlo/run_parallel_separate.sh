@@ -12,7 +12,7 @@ source .env
 # compile code
 g++ -std=c++17 -Wall -Wextra -O2 main.cpp functions.cpp -o monte_carlo.exe  || { echo "Compilation failed"; exit 1; }
 
-# compute step size and sample size for subintervals
+# shared values
 STEP=$(echo "($B - $A) / $SLURM_NTASKS" | bc -l)
 SAMPLE_SIZE=$(echo "$TOTAL_SAMPLES / $SLURM_NTASKS" | bc -l)
 
