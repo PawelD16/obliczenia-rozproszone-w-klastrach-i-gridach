@@ -29,7 +29,7 @@ squeue
 
 - to see more info on node (like allocated resources or errors):
 ```bash
-scontrol show node pdudek-VirtualBox
+scontrol show node <node name>
 ```
 
 
