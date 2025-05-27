@@ -1,3 +1,8 @@
+# Project related
+/temp
+/output
+
+## C++
 # Prerequisites
 *.d
 

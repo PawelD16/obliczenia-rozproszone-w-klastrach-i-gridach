@@ -1,22 +1,22 @@
 #include "functions.h"
 
-std::mt19937 createRandomGenerator()
+std::mt19937 randomGenerator()
 {
     std::random_device r;
     std::seed_seq seed{r(), r(), r(), r(), r(), r(), r(), r()};
-    std::mt19937 gen{seed};
 
-    return gen;
+    return std::mt19937{seed};
 }
+
 
 double f(double x)
 {
     return sin(x);
 }
 
-double monte_carlo(double a, double b, long long samples)
+double monteCarlo(double a, double b, long long samples)
 {
-    auto gen{createRandomGenerator()};
+    auto gen{randomGenerator()};
     std::uniform_real_distribution<> dist(a, b);
 
     double sum = 0.0;

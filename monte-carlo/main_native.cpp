@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     if (argc != 4)
     {
-        std::cerr << "Expected amount of arguments was 3 [a, b, samples], but actually it was " << argc << std::endl ;
+        std::cerr << "Expected amount of arguments was 3 [a, b, samples], but actually it was " << argc - 1 << std::endl ;
         return 1;
     }
 
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     double b = std::atof(argv[2]);
     long long samples = std::atoll(argv[3]);
 
-    double result = monte_carlo(a, b, samples);
+    double result = monteCarlo(a, b, samples);
 
     std::cout << result << std::endl;
 

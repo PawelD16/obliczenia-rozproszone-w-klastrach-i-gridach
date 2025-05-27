@@ -1,6 +1,9 @@
 ## How to setup SLURM?
 Follow this tutorial https://github.com/SergioMEV/slurm-for-dummies
 
+## How to setup OpenMPI?
+Follow this tutorial https://webpages.charlotte.edu/abw/coit-grid01.uncc.edu/ParallelProgSoftware/Software/OpenMPIInstall.pdf
+
 ## Useful commands
 - see info on nodes:
 ```bash
@@ -28,3 +31,5 @@ squeue
 ```bash
 scontrol show node pdudek-VirtualBox
 ```
+
+
