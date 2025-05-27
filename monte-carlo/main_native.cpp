@@ -5,19 +5,18 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc != 4)
+    try
     {
-        std::cerr << "Expected amount of arguments was 3 [a, b, samples], but actually it was " << argc - 1 << std::endl ;
+        auto [a, b, samples] = readParams(argc, argv);
+
+        auto result = monteCarlo(a, b, samples);
+
+        std::cout << result << std::endl;
+    }
+    catch (...)
+    {
         return 1;
     }
 
-    double a = std::atof(argv[1]);
-    double b = std::atof(argv[2]);
-    long long samples = std::atoll(argv[3]);
-
-    double result = monteCarlo(a, b, samples);
-
-    std::cout << result << std::endl;
-
-    return 0;
+    return 0;  
 }

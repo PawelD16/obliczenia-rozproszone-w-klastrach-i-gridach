@@ -28,3 +28,17 @@ double monteCarlo(double a, double b, long long samples)
 
     return (b - a) * sum / samples;
 }
+
+std::tuple<double, double, long long> readParams(int argc, char *argv[])
+{
+    if (argc != 4) 
+    {
+        throw std::invalid_argument("Expected 3 arguments [a, b, samples], got " + argc - 1 );
+    }
+
+    double a = std::atof(argv[1]);
+    double b = std::atof(argv[2]);
+    long long samples = std::atoll(argv[3]);
+
+    return {a, b, samples};
+}
