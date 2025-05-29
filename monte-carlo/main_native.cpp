@@ -7,9 +7,9 @@ int main(int argc, char *argv[])
 {
     try
     {
-        auto [a, b, samples] = readParams(argc, argv);
+        auto [lower_bound, upper_bound, samples] = readArgs(argc, argv);
 
-        auto result = monteCarlo(a, b, samples);
+        auto result = monteCarlo(lower_bound, upper_bound, samples);
 
         std::cout << result << std::endl;
     }
@@ -18,5 +18,5 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    return 0;  
+    return 0;
 }

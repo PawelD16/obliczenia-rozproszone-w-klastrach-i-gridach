@@ -12,4 +12,4 @@ double f(double x);
 
 double monteCarlo(double a, double b, long long samples);
 
-std::tuple<double, double, long long> readParams(int argc, char *argv[]);
+std::tuple<double, double, long long> readArgs(int argc, char *argv[]);
