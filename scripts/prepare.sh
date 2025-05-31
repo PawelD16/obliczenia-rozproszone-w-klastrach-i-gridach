@@ -1,5 +1,5 @@
 #!/bin/bash
 
-source vars.sh
+source .env
 
 mkdir -p $TEMP_DIR

@@ -7,7 +7,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 
-source vars.sh
+source .env
 
 # shared values
 SAMPLE_SIZE=$(echo "$TOTAL_SAMPLES / $SLURM_NTASKS" | bc -l)
@@ -28,4 +28,4 @@ done
 
 result=$(echo "$total / $SLURM_NTASKS" | bc -l)
 
-echo "Final integral estimate: $result"
+echo "$result"

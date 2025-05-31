@@ -7,7 +7,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 
-source vars.sh
+source .env
 
 mpirun $MPI_EXEC $A $TOTAL_SAMPLES
 
