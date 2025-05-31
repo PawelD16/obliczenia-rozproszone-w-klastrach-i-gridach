@@ -1,4 +1,5 @@
 #!/bin/bash
 
-mkdir -p ../output
-mkdir -p ../temp
+source vars.sh
+
+mkdir -p $TEMP_DIR

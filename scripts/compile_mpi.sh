@@ -1,3 +1,5 @@
 #!/bin/bash
 
-mpicxx -o ../temp/mpi.exe ../monte-carlo/main_mpi.cpp ../monte-carlo/functions.cpp || { echo "Compilation failed"; exit 1; }
+source vars.sh
+
+mpicxx -o $MPI_EXEC ../monte-carlo/main_mpi.cpp ../monte-carlo/functions.cpp || { echo "Compilation failed"; exit 1; }

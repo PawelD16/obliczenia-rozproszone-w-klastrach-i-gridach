@@ -1,0 +1,10 @@
+A=0
+B=3.14159
+TOTAL_SAMPLES=1000000000
+
+TEMP_DIR=../temp
+
+MPI_EXEC="${TEMP_DIR}/mpi.exe"
+NATIVE_EXEC="${TEMP_DIR}/native.exe"
+
+CSV_FILENAME=results.csv
