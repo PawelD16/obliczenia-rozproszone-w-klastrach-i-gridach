@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <tuple>
 #include <stdexcept>
+#include <iostream>
 
 std::mt19937 randomGenerator();
 

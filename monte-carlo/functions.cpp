@@ -1,5 +1,7 @@
 #include "functions.h"
-
+/**
+ * unified generator to randomize numbers in the same way
+ */
 std::mt19937 randomGenerator()
 {
     std::random_device r;
@@ -8,16 +10,29 @@ std::mt19937 randomGenerator()
     return std::mt19937{seed};
 }
 
-bool check(double x, double y, double radius)
+/**
+ * first check if randomized number are inside circle. If is outside circle, is outside square too
+ */
+bool check_if_inside_circle(double x, double y, double radius)
 {
     return pow(x,2) + pow(y,2) <= pow(radius,2);
 }
 
-int f(double side, double x, double y)
+/**
+ * check if previously randomized numbers are also inside square
+ */
+int check_if_inside_square(double side, double x, double y)
 {
-    return -side/2 <= x && x <= side/2 && -side/2 <= y && y <= side/2;
+    return -side/2 <= x && x <= side/2 && -side/2 <= y && y <= side/2 ;
 }
 
+/**
+ * function which estimates the area of square which is draw inside circle
+ * circle is in coordinate system. Center of the circle is in the point (0,0)
+ * parameter 1: Radius of the circle i
+ * parameter 2: Samples are the number of points which we need to calculate to determine the area
+ * estimation is done by the monte carlo method
+ */
 double monteCarlo(double radius, long long samples)
 {
     auto gen{randomGenerator()};
@@ -29,15 +44,19 @@ double monteCarlo(double radius, long long samples)
     {
         double x = dist(gen);
         double y = dist(gen);
-        if(check(x, y, radius))
+        if(check_if_inside_circle(x, y, radius))
         {
-            inside_square += f(side, x, y );
+            inside_square += check_if_inside_square(side, x, y );
         }
     }
 
-    return (inside_square / samples) * (pow(radius,2) * M_PI);
+    return (static_cast<double>(1.0 * inside_square / samples)) * (pow(radius,2) * M_PI);
 }
 
+/**
+ * arguments are given from outside source - different script
+ * funtion which is reading this arguments and split them to monte carlo parameters
+ */
 std::tuple<double, long long> readArgs(int argc, char *argv[])
 {
     if (argc != 3)
