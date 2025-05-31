@@ -9,4 +9,5 @@
 
 source vars.sh
 
-mpirun $MPI_EXEC $A $B $TOTAL_SAMPLES
+mpirun $MPI_EXEC $A $TOTAL_SAMPLES
+

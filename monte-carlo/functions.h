@@ -10,6 +10,6 @@ std::mt19937 randomGenerator();
 
 double f(double x);
 
-double monteCarlo(double a, double b, long long samples);
+double monteCarlo(double a, long long samples);
 
-std::tuple<double, double, long long> readArgs(int argc, char *argv[]);
+std::tuple<double, long long> readArgs(int argc, char *argv[]);
