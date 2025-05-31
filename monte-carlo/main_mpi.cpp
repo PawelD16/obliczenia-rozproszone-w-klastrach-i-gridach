@@ -18,10 +18,10 @@ int main(int argc, char *argv[])
 
     try
     {
-        auto [lower_bound, upper_bound, samples] = readArgs(argc, argv);
+        auto [radius, samples] = readArgs(argc, argv);
 
         long long sample_size = samples / size;
-        double local = monteCarlo(lower_bound, upper_bound, sample_size);
+        double local = monteCarlo(radius, sample_size);
         double total = 0.0;
 
         // perform reduction with a sum operation (MPI_SUM),

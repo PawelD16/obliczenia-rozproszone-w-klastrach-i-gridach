@@ -8,45 +8,50 @@ std::mt19937 randomGenerator()
     return std::mt19937{seed};
 }
 
-double f(double x)
+bool check(double x, double y, double radius)
 {
-    return sin(x);
+    return pow(x,2) + pow(y,2) <= pow(radius,2);
 }
 
-double monteCarlo(double lower_bound, double upper_bound, long long samples)
+int f(double side, double x, double y)
+{
+    return -side/2 <= x && x <= side/2 && -side/2 <= y && y <= side/2;
+}
+
+double monteCarlo(double radius, long long samples)
 {
     auto gen{randomGenerator()};
-    std::uniform_real_distribution<> dist(lower_bound, upper_bound);
+    std::uniform_real_distribution<> dist(-radius, radius);
 
-    double sum = 0.0;
+    double side = radius * sqrt(2);
+    long long inside_square = 0;
     for (long long i = 0; i < samples; ++i)
     {
-        sum += f(dist(gen));
+        double x = dist(gen);
+        double y = dist(gen);
+        if(check(x, y, radius))
+        {
+            inside_square += f(side, x, y );
+        }
     }
 
-    return (upper_bound - lower_bound) * sum / samples;
+    return (inside_square / samples) * (pow(radius,2) * M_PI);
 }
 
-std::tuple<double, double, long long> readArgs(int argc, char *argv[])
+std::tuple<double, long long> readArgs(int argc, char *argv[])
 {
-    if (argc != 4)
+    if (argc != 3)
     {
-        throw std::invalid_argument("Expected 3 arguments [lower bound, upper bound, samples], got " + argc - 1);
+        throw std::invalid_argument("Expected 2 arguments [radius, samples], got " + argc - 1);
     }
 
-    double lower_bound = std::atof(argv[1]);
-    double upper_bound = std::atof(argv[2]);
-    long long samples = std::atoll(argv[3]);
-
-    if (lower_bound >= upper_bound)
-    {
-        throw std::invalid_argument("Lower bound of range must be smaller than upper bound");
-    }
+    double radius = std::atof(argv[1]);
+    long long samples = std::atoll(argv[2]);
 
     if (samples <= 0)
     {
         throw std::invalid_argument("Amount of samples must be a positive number");
     }
 
-    return {lower_bound, upper_bound, samples};
+    return {radius, samples};
 }
