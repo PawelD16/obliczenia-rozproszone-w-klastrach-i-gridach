@@ -9,4 +9,4 @@
 
 source .env
 
-mpirun ../temp/mpi.exe $A $B $TOTAL_SAMPLES
+mpirun ../temp/mpi.exe $A $TOTAL_SAMPLES

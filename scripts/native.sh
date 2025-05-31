@@ -15,7 +15,7 @@ SAMPLE_SIZE=$(echo "$TOTAL_SAMPLES / $SLURM_NTASKS" | bc -l)
 # run each task with srun and collect results in parallel
 # launch with srun and get result to pipe
 srun --output=partial_output_%t.txt bash -c '
-  ../temp/native.exe '"$A"' '"$B"' '"$SAMPLE_SIZE"'
+  ../temp/native.exe '"$A"' '"$SAMPLE_SIZE"'
 '
 
 # cleanup and aggregate
