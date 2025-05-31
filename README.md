@@ -40,9 +40,9 @@ sudo systemctl reset slurmctl
 sudo scontrol update NodeName=<node name> State=IDLE
 ```
 
-- to run native code:
+- to run :
 ```bash
-sbatch <script>.sh
+bash run_<script>.sh
 ```
 
 - to see current jobs:

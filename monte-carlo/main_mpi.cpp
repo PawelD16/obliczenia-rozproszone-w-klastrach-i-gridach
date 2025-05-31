@@ -1,6 +1,3 @@
-#include <iostream>
-#include <cstdlib>
-#include <chrono>
 #include <mpi.h>
 
 #include "functions.h"
@@ -33,7 +30,7 @@ int main(int argc, char *argv[])
         if (rank == PARENT_PROCESS_ID)
         {
             total /= size; // Average result from all processes
-            std::cout << "Estimated integral: " << total << std::endl;
+            std::cout << total << std::endl;
         }
     }
     catch (...)

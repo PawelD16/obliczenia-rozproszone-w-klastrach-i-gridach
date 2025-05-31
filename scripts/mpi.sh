@@ -9,4 +9,5 @@
 
 source .env
 
-mpirun ../temp/mpi.exe $A $TOTAL_SAMPLES
+mpirun $MPI_EXEC $A $TOTAL_SAMPLES
+

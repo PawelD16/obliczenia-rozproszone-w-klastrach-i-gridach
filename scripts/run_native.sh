@@ -16,7 +16,6 @@ JOB_ID=$(echo "$JOB_OUTPUT" | grep -o '[0-9]\+')
 echo "Monitoring job $JOB_ID for completion..."
 
 # Monitor the completion log until our job appears
-LOG_FILE="/var/log/slurm/completed_jobs.log"
 TIMEOUT=3600  # 1 hour timeout
 ELAPSED=0
 SLEEP_INTERVAL=10
