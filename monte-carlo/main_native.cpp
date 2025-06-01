@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     {
         auto [radius, samples] = readArgs(argc, argv);
 
-        auto result = monteCarlo( radius,  samples);
+        auto result = monteCarlo(radius,  samples);
 
         std::cout << result << std::endl;
     }

@@ -4,10 +4,10 @@ from typing import List
 
 
 class Result:
-    def __init__(self, job_id: str) -> None:
+    def __init__(self, job_id: str, result: float) -> None:
         self.job_id: str = job_id
         self.type: str = ""
-        self.result: float = 0.0
+        self.result: float = result
         self.runtime: float = 0.0
 
     @staticmethod

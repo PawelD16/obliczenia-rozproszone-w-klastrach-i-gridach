@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
         auto [radius, samples] = readArgs(argc, argv);
 
         long long sample_size = samples / size;
+
         double local = monteCarlo(radius, sample_size);
         double total = 0.0;
 

@@ -41,33 +41,39 @@ def clear_log_file(pathname: str | None) -> None:
         print(f"Error: {e}")
 
 
-def read_log_file_runtimes(pathname: str | None) -> Dict[str, float]:
-    runtimes: Dict[str, float] = {}
+def read_log_file_runtimes(file_path: str | None) -> Dict[str, float]:
+    if not file_path:
+        raise FileNotFoundError(f"Couldn't find {file_path} log file")
 
-    if not pathname:
-        return runtimes
+    results: Dict[str, float] = {}
 
-    with open(pathname, "r") as f:
+    with open(file_path, "r") as f:
         for line in f:
-            fields = dict(entry.split("=") for entry in line.strip().split() if "=" in entry)
+            fields = {}
+            for entry in line.strip().split():
+                if "=" in entry:
+                    key, value = entry.split("=", 1)
+                    fields[key] = value
+
             job_id = fields.get("JobId")
+            state: str = fields.get("JobState", "")
             start = fields.get("StartTime")
             end = fields.get("EndTime")
 
-            if job_id and start and end:
+            if job_id and start and end and state.upper() == "COMPLETED":
                 try:
                     start_time = datetime.fromisoformat(start)
                     end_time = datetime.fromisoformat(end)
-                    runtime_seconds = (end_time - start_time).total_seconds()
-                    runtimes[job_id] = runtime_seconds
-                except ValueError:
-                    print(f"Invalid timestamp for job {job_id}")
+                    runtime = (end_time - start_time).total_seconds()
 
-    return runtimes
+                    results[job_id] = runtime
+                except ValueError:
+                    print(f"Invalid date format for job {job_id}")
+    return results
 
 
 def write_runtimes_to_csv(results: List[Result], output_csv: str) -> None:
-    with open(output_csv, 'w', newline='') as csvfile:
+    with open(output_csv, "w", newline="") as csvfile:
         csvfile.write("\n".join(Result.to_csv_list(results)))
 
 
@@ -114,8 +120,7 @@ def process_job(pathname: str) -> Result:
     job_id = run_job(pathname)
     wait_for_job_completion(job_id)
 
-    res_object = Result(job_id)
-    res_object.result = float(get_job_output(job_id, OUTPUT_DIR).strip())
+    res_object = Result(job_id, float(get_job_output(job_id, OUTPUT_DIR).strip()))
 
     return res_object
 
@@ -125,7 +130,7 @@ def main() -> None:
 
     results: List[Result] = []
 
-    for idx in range(0, RUN_REPETITIONS):
+    for _ in range(0, RUN_REPETITIONS):
         res = process_job(NATIVE_SCRIPT_PATH)
         res.type = "native"
         results.append(res)
@@ -141,6 +146,8 @@ def main() -> None:
             raise RuntimeError(f"Could find runtime for {result.job_id}")
 
         result.runtime = runtimes[result.job_id]
+
+    write_runtimes_to_csv(results, CSV_FILENAME)
 
 
 if __name__ == "__main__":
