@@ -9,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List
 from statistics import mean
+import math
 
 from dotenv import load_dotenv
 
@@ -38,8 +39,10 @@ NO_PARALLELZATION_SCRIPT_PATH = "run_no_parallelization.sh"
 
 
 def get_theoretical_area(radius: float) -> float:
-    """Calculate the theoretical area of a square inscribed in a circle."""
-    return 2 * (radius ** 2)  # side of square is r√2, so area is 2r²
+    """Calculate the theoretical area that matches the C++ implementation.
+    The C++ code returns (points_in_square_and_circle / total_points) * πr²
+    = (1/2) * πr² = (π/2)r²"""
+    return (math.pi / 2.0) * (radius ** 2)
 
 
 def calculate_average_error(results: List[Result], result_type: str) -> float:
