@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List
+from statistics import mean
 
 from dotenv import load_dotenv
 
@@ -33,7 +34,6 @@ def clear_log_file(pathname: str | None) -> None:
 
     try:
         jobcomp_file.write_text("")
-
         print(f"Cleared job comp file: {jobcomp_file}")
     except PermissionError:
         print("Permission denied. Try running with sudo or check file ownership.")
@@ -65,7 +65,6 @@ def read_log_file_runtimes(file_path: str | None) -> Dict[str, float]:
                     start_time = datetime.fromisoformat(start)
                     end_time = datetime.fromisoformat(end)
                     runtime = (end_time - start_time).total_seconds()
-
                     results[job_id] = runtime
                 except ValueError:
                     print(f"Invalid date format for job {job_id}")
@@ -82,16 +81,13 @@ def wait_for_job_completion(job_id: str, poll_interval=2) -> None:
 
     while True:
         result = subprocess.run(["squeue", "-j", job_id], capture_output=True, text=True)
-
         if job_id not in result.stdout:
             return
-
         time.sleep(poll_interval)
 
 
 def get_job_output(job_id: str, output_dir: str | None = ".") -> str:
     actual_output_dir = output_dir or "."
-
     matches = list(Path(actual_output_dir).glob(f"*{job_id}*"))
 
     if not matches:
@@ -125,6 +121,19 @@ def process_job(pathname: str) -> Result:
     return res_object
 
 
+def print_averages(results: List[Result]) -> None:
+    native_times = [r.runtime for r in results if r.type == "native"]
+    mpi_times = [r.runtime for r in results if r.type == "mpi"]
+
+    print("\nResults Summary:")
+    print("=" * 50)
+    print(f"\nNATIVE (runs: {len(native_times)}):")
+    print(f"Average runtime: {mean(native_times):.2f} seconds")
+    
+    print(f"\nMPI (runs: {len(mpi_times)}):")
+    print(f"Average runtime: {mean(mpi_times):.2f} seconds")
+
+
 def main() -> None:
     clear_log_file(LOG_FILE)
 
@@ -148,6 +157,7 @@ def main() -> None:
         result.runtime = runtimes[result.job_id]
 
     write_runtimes_to_csv(results, CSV_FILENAME)
+    print_averages(results)
 
 
 if __name__ == "__main__":
