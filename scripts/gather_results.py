@@ -98,7 +98,11 @@ def read_log_file_runtimes(file_path: str | None) -> Dict[str, float]:
 
 
 def write_runtimes_to_csv(results: List[Result], output_csv: str) -> None:
-    with open(output_csv, "w", newline="") as csvfile:
+    # Ensure the results directory exists
+    output_path = Path(output_csv)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    with open(output_path, "w", newline="") as csvfile:
         csvfile.write("\n".join(Result.to_csv_list(results)))
 
 
