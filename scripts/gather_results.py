@@ -151,19 +151,14 @@ def process_job(pathname: str, total_samples: int) -> Result:
     return res_object
 
 
-def get_exponent(n: int) -> int:
-    """Get the exponent of 10 for a number (e.g., 100000000 -> 8)."""
-    return len(str(n)) - 1
-
-
 def main() -> None:
     args = parse_args()
     total_samples = args.num_points
     print(f"Running with {total_samples:,} points")
 
     # Modify CSV filename to include the exponent
-    exponent = get_exponent(total_samples)
-    csv_path = CSV_FILENAME.replace('.csv', f'_{exponent}.csv')
+    num = total_samples / 1e8
+    csv_path = CSV_FILENAME.replace('.csv', f'_{num}.csv')
 
     clear_log_file(LOG_FILE)
     results: List[Result] = []

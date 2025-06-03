@@ -6,13 +6,15 @@ import time
 import argparse
 from typing import List
 import math
+from pathlib import Path
 
 from dotenv import load_dotenv
 from Result import Result
 
 load_dotenv()
 
-CSV_FILENAME = os.getenv("CSV_FILENAME", "results_no_parallel.csv")
+RESULTS_DIR = Path("../results")
+CSV_FILENAME = RESULTS_DIR / "results_no_parallel.csv"
 ENV_RUN_REPETITIONS = os.getenv("RUN_REPETITIONS")
 RUN_REPETITIONS = int(ENV_RUN_REPETITIONS) if ENV_RUN_REPETITIONS else 10
 A = float(os.getenv("A", "1.0"))  # radius from environment
@@ -58,7 +60,11 @@ def run_single_experiment(total_samples: int) -> Result:
 
 
 def write_runtimes_to_csv(results: List[Result], output_csv: str) -> None:
-    with open(output_csv, "w", newline="") as csvfile:
+    # Ensure the results directory exists
+    output_path = Path(output_csv)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    with open(output_path, "w", newline="") as csvfile:
         csvfile.write("\n".join(Result.to_csv_list(results)))
 
 
