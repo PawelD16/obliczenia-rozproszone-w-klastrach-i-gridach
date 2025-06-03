@@ -33,11 +33,6 @@ def get_theoretical_area(radius: float) -> float:
     return (math.pi / 2.0) * (radius ** 2)
 
 
-def get_power_of_ten(n: int) -> int:
-    """Get the power of 10 for a number (e.g., 100000000 -> 8 because 10^8)."""
-    return len(str(n)) - 1
-
-
 def run_single_experiment(total_samples: int) -> Result:
     """Run a single experiment and measure its execution time."""
     start_time = time.time()
@@ -72,9 +67,8 @@ def main() -> None:
     total_samples = args.num_points
     print(f"Running with {total_samples:,} points")
 
-    # Modify CSV filename to include the power of 10
-    power = get_power_of_ten(total_samples)
-    csv_path = CSV_FILENAME.replace('.csv', f'_{power}.csv')
+    num = total_samples / 1e8
+    csv_path = CSV_FILENAME.replace('.csv', f'_{num}.csv')
 
     results: List[Result] = []
     theoretical = get_theoretical_area(A)
