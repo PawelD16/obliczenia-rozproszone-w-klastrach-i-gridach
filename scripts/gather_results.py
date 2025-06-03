@@ -151,24 +151,6 @@ def process_job(pathname: str, total_samples: int) -> Result:
     return res_object
 
 
-def print_averages(results: List[Result]) -> None:
-    native_times = [r.runtime for r in results if r.type == "native"]
-    mpi_times = [r.runtime for r in results if r.type == "mpi"]
-    theoretical = get_theoretical_area(A)
-
-    print("\nResults Summary:")
-    print("=" * 50)
-    print(f"\nTheoretical area: {theoretical:.3f}")
-    
-    print(f"\nNATIVE (runs: {len(native_times)}):")
-    print(f"Average runtime: {mean(native_times):.2f} seconds")
-    print(f"Average absolute error: {calculate_average_error(results, 'native'):.6f}")
-    
-    print(f"\nMPI (runs: {len(mpi_times)}):")
-    print(f"Average runtime: {mean(mpi_times):.2f} seconds")
-    print(f"Average absolute error: {calculate_average_error(results, 'mpi'):.6f}")
-
-
 def main() -> None:
     args = parse_args()
     total_samples = args.num_points
@@ -176,14 +158,17 @@ def main() -> None:
 
     clear_log_file(LOG_FILE)
     results: List[Result] = []
+    theoretical = get_theoretical_area(A)
 
     for _ in range(0, RUN_REPETITIONS):
         res = process_job(NATIVE_SCRIPT_PATH, total_samples)
         res.type = "native"
+        res.calculate_error(theoretical)
         results.append(res)
 
         res = process_job(MPI_SCRIPT_PATH, total_samples)
         res.type = "mpi"
+        res.calculate_error(theoretical)
         results.append(res)
 
     runtimes = read_log_file_runtimes(LOG_FILE)
@@ -191,11 +176,9 @@ def main() -> None:
     for result in results:
         if result.job_id not in runtimes:
             raise RuntimeError(f"Could find runtime for {result.job_id}")
-
         result.runtime = runtimes[result.job_id]
 
     write_runtimes_to_csv(results, CSV_FILENAME)
-    print_averages(results)
 
 
 if __name__ == "__main__":
