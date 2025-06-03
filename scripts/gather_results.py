@@ -147,12 +147,29 @@ def run_job(pathname: str, total_samples: int) -> str:
 
 
 def process_job(pathname: str, total_samples: int) -> Result:
-    job_id = run_job(pathname, total_samples)
-    wait_for_job_completion(job_id)
-
-    res_object = Result(job_id, float(get_job_output(job_id, OUTPUT_DIR).strip()))
-
-    return res_object
+    if pathname == NO_PARALLELZATION_SCRIPT_PATH:
+        # For no parallelization, measure time directly
+        start_time = time.time()
+        result = subprocess.run(
+            ["bash", pathname],
+            capture_output=True,
+            text=True,
+            env={**os.environ, "TOTAL_SAMPLES": str(total_samples)}
+        )
+        end_time = time.time()
+        
+        if result.returncode != 0:
+            raise RuntimeError(f"Failed to run no-parallel job: {result.stderr}")
+            
+        res_object = Result(f"no_parallel_{int(start_time)}", float(result.stdout.strip()))
+        res_object.runtime = end_time - start_time
+        return res_object
+    else:
+        # For MPI and native versions, use SLURM
+        job_id = run_job(pathname, total_samples)
+        wait_for_job_completion(job_id)
+        res_object = Result(job_id, float(get_job_output(job_id, OUTPUT_DIR).strip()))
+        return res_object
 
 
 def main() -> None:
@@ -160,31 +177,41 @@ def main() -> None:
     total_samples = args.num_points
     print(f"Running with {total_samples:,} points")
 
-    # Modify CSV filename to include the exponent
+    # Modify CSV filename to include the number
     num = total_samples / 1e8
-    csv_path = CSV_FILENAME.replace('.csv', f'_{num}.csv')
+    csv_path = str(CSV_FILENAME).replace('.csv', f'_{num}.csv')
 
     clear_log_file(LOG_FILE)
     results: List[Result] = []
     theoretical = get_theoretical_area(A)
 
     for _ in range(0, RUN_REPETITIONS):
+        # Run native version
         res = process_job(NATIVE_SCRIPT_PATH, total_samples)
         res.type = "native"
         res.calculate_error(theoretical)
         results.append(res)
 
+        # Run MPI version
         res = process_job(MPI_SCRIPT_PATH, total_samples)
         res.type = "mpi"
         res.calculate_error(theoretical)
         results.append(res)
 
+        # Run no parallelization version
+        res = process_job(NO_PARALLELZATION_SCRIPT_PATH, total_samples)
+        res.type = "no_parallel"
+        res.calculate_error(theoretical)
+        results.append(res)
+
     runtimes = read_log_file_runtimes(LOG_FILE)
 
+    # Update runtimes for SLURM jobs (native and mpi)
     for result in results:
-        if result.job_id not in runtimes:
-            raise RuntimeError(f"Could find runtime for {result.job_id}")
-        result.runtime = runtimes[result.job_id]
+        if result.type != "no_parallel":  # Skip no_parallel as it already has runtime
+            if result.job_id not in runtimes:
+                raise RuntimeError(f"Could find runtime for {result.job_id}")
+            result.runtime = runtimes[result.job_id]
 
     write_runtimes_to_csv(results, csv_path)
 
