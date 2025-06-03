@@ -74,7 +74,7 @@ def main() -> None:
     print(f"Running with {total_samples:,} points")
 
     num = total_samples / 1e8
-    csv_path = CSV_FILENAME.replace('.csv', f'_{num}.csv')
+    csv_path = str(CSV_FILENAME).replace('.csv', f'_{num}.csv')
 
     results: List[Result] = []
     theoretical = get_theoretical_area(A)
